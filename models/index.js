@@ -1,12 +1,22 @@
 'use strict';
+import fs from 'fs';
+import path from 'path';
+import Sequelize from 'sequelize';
+import process from 'process';
+import User from './User';
+import Event from './Event';
+import Venue from './Venue';
+import Ticket from './Ticket';
 
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-const process = require('process');
+const model = {
+  User: User,
+  Event: Event,
+  Venue: Venue,
+  Ticket: Ticket
+};
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+import config from '../config/config.json';
 const db = {};
 
 let sequelize;
@@ -27,7 +37,7 @@ fs
     );
   })
   .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
+    const model = model[sequelize.import(path.join(__dirname, file))];
     db[model.name] = model;
   });
 
